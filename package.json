@@ -26,10 +26,14 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+<<<<<<< HEAD
     "@actions/core": "^1.8.2",
     "@actions/github": "^5.0.3",
     "@octokit/rest": "^18.12.0",
     "semver-sort": "^1.0.0"
+=======
+    "@actions/core": "^1.8.2"
+>>>>>>> e82e0d0 (Bump @actions/core from 1.6.0 to 1.8.2)
   },
   "devDependencies": {
     "@abstracter/atomic-release": "^1.2.0",
