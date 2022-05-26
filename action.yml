@@ -1,7 +1,7 @@
 name: 'remove-old-releases'
 description: 'This action removes old releases from github based on rules'
 author: 'Stephen Reindl'
-brnading:
+branding:
   icon: 'trash-2'
   color: 'orange'
 inputs:
@@ -13,6 +13,10 @@ inputs:
     required: true
     description: 'The guthub token to be used, e.g. github.TOKEN'
     default: ''
+  dry-run:
+    required: false
+    description: 'If true, no actions are performed. Default is: true for savety reasons'
+    default: true
 runs:
   using: 'node16'
   main: 'dist/index.js'
