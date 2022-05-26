@@ -67,6 +67,10 @@ class BranchTask extends task_1.default {
         return true;
     }
     parse(what) {
+        if (!what || what === '') {
+            // empty string do not change anything
+            return true;
+        }
         const items = what.split(',');
         for (const item of items) {
             const split = item.split('=');
@@ -84,7 +88,7 @@ class BranchTask extends task_1.default {
                 case 'keep':
                     this.keep = arg;
                     break;
-                case 'downloads':
+                case 'download':
                     this.downloads = arg;
                     break;
                 default:
@@ -141,6 +145,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.parseCommand = void 0;
 const core = __importStar(__nccwpck_require__(2186));
 const github = __importStar(__nccwpck_require__(5438));
 const branchtask_1 = __importDefault(__nccwpck_require__(314));
@@ -152,6 +157,19 @@ let octokit;
 let repos;
 let owner;
 let allreleases;
+function parseCommand(line) {
+    const res = line.match(/^([^:]+):\s*(.*)\s*$/);
+    if (!res) {
+        throw new Error(`Line '${line}' cannot be parsed`);
+    }
+    const branch = res[1];
+    const args = res[2];
+    if (branch === null || args === null) {
+        throw new Error(`Line '${line}' cannot be parsed. Either branch or args are missing`);
+    }
+    return [branch, args];
+}
+exports.parseCommand = parseCommand;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -178,18 +196,8 @@ function run() {
             core.debug(`parsing ${lines.length} commands ...`); // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
             // eslint-disable-next-line @typescript-eslint/no-for-in-array
             for (const line in lines) {
-                const res = /^([^:])+\s*(.*)\s*$/.exec(line);
-                if (!res) {
-                    core.error(`Line ${line} cannot be parsed`);
-                    return;
-                }
-                const branch = res[0];
-                const args = res[1];
-                if (!branch || !args) {
-                    core.error(`Line ${line} cannot be parsed. Either branch or args are missing`);
-                    return;
-                }
                 let task;
+                const [branch, args] = parseCommand(line);
                 if (branch === '@del') {
                     task = new removeemptybranchestask_1.default(line, allreleases);
                 }
