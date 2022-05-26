@@ -8,7 +8,7 @@ inputs:
     default: ''
   token:
     required: true
-    description: 'The guthub token to be used, e.g. ${{ github.TOKEN }}'
+    description: 'The guthub token to be used, e.g. github.TOKEN'
     default: ''
 runs:
   using: 'node16'
