@@ -32,4 +32,4 @@ jobs:
       - run: |
           npm run all
       - run: |
-          npm semantic-release
+          npm run semantic-release
