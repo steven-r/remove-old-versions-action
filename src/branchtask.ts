@@ -41,6 +41,10 @@ export default class BranchTask extends Task {
   }
 
   parse(what: string): boolean {
+    if (!what || what === '') {
+      // empty string do not change anything
+      return true
+    }
     const items = what.split(',')
     for (const item of items) {
       const split = item.split('=')
@@ -58,7 +62,7 @@ export default class BranchTask extends Task {
         case 'keep':
           this.keep = arg
           break
-        case 'downloads':
+        case 'download':
           this.downloads = arg
           break
         default:

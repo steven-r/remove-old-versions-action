@@ -13,6 +13,21 @@ let repos: string
 let owner: string
 let allreleases: Release[]
 
+export function parseCommand(line: string): string[] {
+  const res = line.match(/^([^:]+):\s*(.*)\s*$/)
+  if (!res) {
+    throw new Error(`Line '${line}' cannot be parsed`)
+  }
+  const branch = res[1]
+  const args = res[2]
+  if (branch === null || args === null) {
+    throw new Error(
+      `Line '${line}' cannot be parsed. Either branch or args are missing`
+    )
+  }
+  return [branch, args]
+}
+
 async function run(): Promise<void> {
   try {
     const lines: string[] = core.getMultilineInput('tasks')
@@ -41,20 +56,8 @@ async function run(): Promise<void> {
     core.debug(`parsing ${lines.length} commands ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
     // eslint-disable-next-line @typescript-eslint/no-for-in-array
     for (const line in lines) {
-      const res = /^([^:])+\s*(.*)\s*$/.exec(line)
-      if (!res) {
-        core.error(`Line ${line} cannot be parsed`)
-        return
-      }
-      const branch = res[0]
-      const args = res[1]
-      if (!branch || !args) {
-        core.error(
-          `Line ${line} cannot be parsed. Either branch or args are missing`
-        )
-        return
-      }
       let task: Task
+      const [branch, args] = parseCommand(line)
       if (branch === '@del') {
         task = new RemoveEmptyBranchesTask(line, allreleases)
       } else {
