@@ -13,6 +13,10 @@ inputs:
     required: true
     description: 'The guthub token to be used, e.g. github.TOKEN'
     default: ''
+  dry-run:
+    required: false
+    description: 'If true, no actions are performed. Default is: true for savety reasons'
+    default: true
 runs:
   using: 'node16'
   main: 'dist/index.js'
