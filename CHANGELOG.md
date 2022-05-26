@@ -1,3 +1,10 @@
+# [1.1.0-dev.1](https://github.com/steven-r/remove-old-versions-action/compare/v1.0.1-dev.1...v1.1.0-dev.1) (2022-05-26)
+
+
+### Features
+
+* implemented execution logic ([3524df8](https://github.com/steven-r/remove-old-versions-action/commit/3524df880b6dde5313fd1f328856bc73d62ab0ab))
+
 ## [1.0.1-dev.1](https://github.com/steven-r/remove-old-versions-action/compare/v1.0.0...v1.0.1-dev.1) (2022-05-26)
 
 
