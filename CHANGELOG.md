@@ -1,3 +1,10 @@
+## [1.0.1-dev.1](https://github.com/steven-r/remove-old-versions-action/compare/v1.0.0...v1.0.1-dev.1) (2022-05-26)
+
+
+### Bug Fixes
+
+* **deps:** pin dependencies ([66cbe78](https://github.com/steven-r/remove-old-versions-action/commit/66cbe7893f6ab92de8554fcc274a16b8808c8d8e))
+
 # 1.0.0 (2022-05-26)
 
 
