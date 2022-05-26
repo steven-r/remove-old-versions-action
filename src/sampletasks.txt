@@ -1,0 +1,5 @@
+@main: keep 3, downloads 10
+next: keep 3
+fix-*: keep 3
+feat-*: keep 3
+@del: keep 0

@@ -1,11 +1,15 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'remove-old-releases'
+description: 'This action removes old releases from github based on rules'
+author: 'Stephen Reindl'
 inputs:
-  milliseconds: # change this
+  tasks:
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
+    description: 'The tasks to be performed'
+    default: ''
+  token:
+    required: true
+    description: 'The guthub token to be used, e.g. ${{ github.TOKEN }}'
+    default: ''
 runs:
   using: 'node16'
   main: 'dist/index.js'
