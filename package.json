@@ -48,6 +48,9 @@
     "@typescript-eslint/parser": "^5.8.1",
 <<<<<<< HEAD
     "@vercel/ncc": "^0.34.0",
+=======
+    "@vercel/ncc": "^0.33.4",
+>>>>>>> c8013f0 (Bump @vercel/ncc from 0.31.1 to 0.33.4)
     "eslint": "^8.16.0",
     "eslint-plugin-github": "^4.3.6",
 =======
