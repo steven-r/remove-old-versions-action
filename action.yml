@@ -1,6 +1,9 @@
 name: 'remove-old-releases'
 description: 'This action removes old releases from github based on rules'
 author: 'Stephen Reindl'
+brnading:
+  icon: 'trash-2'
+  color: 'orange'
 inputs:
   tasks:
     required: true

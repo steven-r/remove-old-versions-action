@@ -1,74 +1,29 @@
-<p align="center">
-  <a href="https://github.com/actions/typescript-action/actions"><img alt="typescript-action status" src="https://github.com/actions/typescript-action/workflows/build-test/badge.svg"></a>
-</p>
+[![build-test](https://github.com/steven-r/remove-old-versions-action/actions/workflows/test.yml/badge.svg)](https://github.com/steven-r/remove-old-versions-action/actions/workflows/test.yml)
 
-# Create a JavaScript Action using TypeScript
+# Action to cleanup old releases based on rules
 
-Use this template to bootstrap the creation of a TypeScript action.:rocket:
+You can use this action to clean releases based on branches and parameters like number of versions to keep or downloads
+# Use this template
 
-This template includes compilation support, tests, a validation workflow, publishing, and versioning guidance.  
+You can use this action by referencing to `steven-r/remove-old-releases@latest`
+THen you have to provide to parameters:
 
-If you are new, there's also a simpler introduction.  See the [Hello World JavaScript Action](https://github.com/actions/hello-world-javascript-action)
+* `rules`
+You can pass several rules (one per line) and they describe, for which branches which keep order is executed:
 
-## Create an action from this template
-
-Click the `Use this Template` and provide the new repo details for your action
-
-## Code in Main
-
-> First, you'll need to have a reasonably modern version of `node` handy. This won't work with versions older than 9, for instance.
-
-Install the dependencies  
-```bash
-$ npm install
+```
+uses: steven-r/remove-old-releases@1
+with:
+  rules: |
+    "@main: keep= 4, download=100"
+    "beta": keep=3
+    "fix-.*": keep=2
+    "feat-.*": keep=3
+    "@del": keep=0 # Remove all releases without a coresponding branch
 ```
 
-Build the typescript and package it for distribution
-```bash
-$ npm run build && npm run package
-```
+For details, you might see the parameter settings below 
 
-Run the tests :heavy_check_mark:  
-```bash
-$ npm test
-
- PASS  ./index.test.js
-  ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
-  ✓ test runs (95ms)
-
-...
-```
-
-## Change action.yml
-
-The action.yml defines the inputs and output for your action.
-
-Update the action.yml with your name, description, inputs and outputs for your action.
-
-See the [documentation](https://help.github.com/en/articles/metadata-syntax-for-github-actions)
-
-## Change the Code
-
-Most toolkit and CI/CD operations involve async operations so the action is run in an async function.
-
-```javascript
-import * as core from '@actions/core';
-...
-
-async function run() {
-  try { 
-      ...
-  } 
-  catch (error) {
-    core.setFailed(error.message);
-  }
-}
-
-run()
-```
-
-See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
 
 ## Publish to a distribution branch
 
