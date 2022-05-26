@@ -26,46 +26,25 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-<<<<<<< HEAD
     "@actions/core": "^1.8.2",
     "@actions/github": "^5.0.3",
     "@octokit/rest": "^18.12.0",
     "semver-sort": "^1.0.0"
-=======
-    "@actions/core": "^1.8.2"
->>>>>>> e82e0d0 (Bump @actions/core from 1.6.0 to 1.8.2)
   },
   "devDependencies": {
-<<<<<<< HEAD
-    "@abstracter/atomic-release": "^1.2.0",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "@types/node": "^17.0.35",
     "@types/semver-sort": "^0.0.1",
-=======
-    "@types/node": "^17.0.35",
->>>>>>> 546300e (Bump @types/node from 16.10.5 to 17.0.35)
     "@typescript-eslint/parser": "^5.8.1",
-<<<<<<< HEAD
     "@vercel/ncc": "^0.34.0",
-=======
-    "@vercel/ncc": "^0.33.4",
->>>>>>> c8013f0 (Bump @vercel/ncc from 0.31.1 to 0.33.4)
     "eslint": "^8.16.0",
     "eslint-plugin-github": "^4.3.6",
-=======
-    "@vercel/ncc": "^0.31.1",
-    "eslint": "^7.32.0",
-    "eslint-plugin-github": "^4.3.2",
->>>>>>> 390dcbe (Bump eslint-plugin-jest from 25.3.2 to 26.2.2)
     "eslint-plugin-jest": "^26.2.2",
     "jest": "^27.2.5",
     "js-yaml": "^4.1.0",
     "prettier": "2.6.2",
-<<<<<<< HEAD
     "semantic-release": "^19.0.2",
-=======
->>>>>>> f63021b (Bump prettier from 2.5.1 to 2.6.2)
     "ts-jest": "^27.1.2",
     "typescript": "^4.7.2"
   }
