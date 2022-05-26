@@ -1,0 +1,33 @@
+commands_restrictions:
+  backport:
+    conditions:
+    - base=main
+
+pull_request_rules:
+  - name: automatic merge for Dependabot pull requests
+    conditions:
+      - author~=^dependabot(|-preview)\[bot\]$
+      - check-success=build
+      - check-success=test
+    actions:
+      merge:
+        method: merge  
+
+  - name: validate that the PR is based on latest base changes
+    conditions:
+      - "#commits-behind>0"
+    actions:
+      comment:
+        message: You need to rebase your changes before approving this PR
+      rebase:
+        
+  - name: Backport main PRs directly to next
+    conditions:
+      - base=main
+      - label!=No backmerge
+    actions:
+      backport:
+        branches:
+          - dev
+        labels:
+          - backport
