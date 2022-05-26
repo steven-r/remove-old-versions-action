@@ -16,6 +16,7 @@ pull_request_rules:
   - name: validate that the PR is based on latest base changes
     conditions:
       - "#commits-behind>0"
+      - label!=backport
     actions:
       comment:
         message: You need to rebase your changes before approving this PR
