@@ -1,8 +1,3 @@
-commands_restrictions:
-  backport:
-    conditions:
-    - base=main
-
 pull_request_rules:
   - name: automatic merge for Dependabot pull requests
     conditions:
@@ -28,7 +23,7 @@ pull_request_rules:
       - label!=No backmerge
     actions:
       backport:
-        branches:
-          - dev
+        assignees:
+          - "{{ author }}"
         labels:
           - backport
