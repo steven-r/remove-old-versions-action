@@ -17,10 +17,10 @@ pull_request_rules:
     conditions:
       - "#commits-behind>0"
       - label!=backport
+      - base=main
     actions:
       comment:
-        message: You need to rebase your changes before approving this PR
-      rebase:
+        message: You should rebase your changes before approving this PR
         
   - name: Backport main PRs directly to next
     conditions:
