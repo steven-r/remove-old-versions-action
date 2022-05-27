@@ -1,4 +1,5 @@
 import * as core from '@actions/core'
+import * as github from '@actions/github'
 import * as semsort from 'semver-sort'
 import Release from './release'
 import Task from './task'
@@ -15,10 +16,10 @@ export default class BranchTask extends Task {
     this.isMain = branch === '@main'
   }
 
-  execute(): boolean {
+  async execute(): Promise<boolean> {
     const re = this.isMain
       ? /^v\d+\.\d+\.\d+$/
-      : /v\d+\.\d+\.\d+-${branch]\.\d+/
+      : new RegExp(`v\\d+\\.\\d+\\.\\d+-${this.branch}\\.\\d+`)
     const match = this.releases
       .filter(v => re.test(v.tag_name))
       .reduce<Map<string, Release>>(
@@ -36,7 +37,22 @@ export default class BranchTask extends Task {
         toDelete.push(v)
       }
     }
-    core.info(`Remove ${toDelete.join('/')}`)
+    if (!this.isDryRun()) {
+      // eslint-disable-next-line @typescript-eslint/no-for-in-array
+      for (const verToDelete in toDelete) {
+        const m = match.get(verToDelete)
+        await this.octokit?.request(
+          'DELETE /repos/{owner}/{repo}/releases/{release_id}',
+          {
+            owner: github.context.repo.owner,
+            repo: github.context.repo.owner,
+            release_id: m?.id || 0
+          }
+        )
+      }
+    } else {
+      core.info(`Remove ${toDelete.join('/')}`)
+    }
     return true
   }
 
@@ -55,7 +71,7 @@ export default class BranchTask extends Task {
       const cmd = split[0].trim()
       const arg = Number.parseInt(split[1].trim())
       if (isNaN(arg)) {
-        core.error(`cannot parse  ${split[1].trim()} in ${this.line}`)
+        core.error(`cannot parse ${split[1].trim()} in ${this.line}`)
         return false
       }
       switch (cmd) {

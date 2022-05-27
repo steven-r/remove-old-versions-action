@@ -12,6 +12,7 @@ let octokit: Octokit
 let repos: string
 let owner: string
 let allreleases: Release[]
+let dryRun: boolean
 
 export function parseCommand(line: string): string[] {
   const res = line.match(/^([^:]+):\s*(.*)\s*$/)
@@ -30,6 +31,7 @@ export function parseCommand(line: string): string[] {
 
 async function run(): Promise<void> {
   try {
+    dryRun = core.getBooleanInput('dry-run')
     const lines: string[] = core.getMultilineInput('tasks')
     if (lines.length === 0) {
       core.error('Please provide tasks to be executed')
@@ -63,6 +65,7 @@ async function run(): Promise<void> {
       } else {
         task = new BranchTask(line, branch, allreleases)
       }
+      task.setDryRun(dryRun)
       if (task.parse(args)) {
         tasks.push(task)
       } else {

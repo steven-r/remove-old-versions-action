@@ -29,11 +29,21 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core = __importStar(__nccwpck_require__(2186));
+const github = __importStar(__nccwpck_require__(5438));
 const semsort = __importStar(__nccwpck_require__(9805));
 const task_1 = __importDefault(__nccwpck_require__(1409));
 class BranchTask extends task_1.default {
@@ -46,25 +56,41 @@ class BranchTask extends task_1.default {
         this.isMain = branch === '@main';
     }
     execute() {
-        const re = this.isMain
-            ? /^v\d+\.\d+\.\d+$/
-            : /v\d+\.\d+\.\d+-${branch]\.\d+/;
-        const match = this.releases
-            .filter(v => re.test(v.tag_name))
-            .reduce((map, obj) => {
-            map.set(obj.tag_name, obj);
-            return map;
-        }, new Map());
-        const versions = semsort.asc(Array.from(match.keys()));
-        const toDelete = versions.slice(0, -this.keep - 1);
-        for (const v of toDelete) {
-            const m = match.get(v);
-            if (m && m._downloads < this.downloads) {
-                toDelete.push(v);
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            const re = this.isMain
+                ? /^v\d+\.\d+\.\d+$/
+                : new RegExp(`v\\d+\\.\\d+\\.\\d+-${this.branch}\\.\\d+`);
+            const match = this.releases
+                .filter(v => re.test(v.tag_name))
+                .reduce((map, obj) => {
+                map.set(obj.tag_name, obj);
+                return map;
+            }, new Map());
+            const versions = semsort.asc(Array.from(match.keys()));
+            const toDelete = versions.slice(0, -this.keep - 1);
+            for (const v of toDelete) {
+                const m = match.get(v);
+                if (m && m._downloads < this.downloads) {
+                    toDelete.push(v);
+                }
             }
-        }
-        core.info(`Remove ${toDelete.join('/')}`);
-        return true;
+            if (!this.isDryRun()) {
+                // eslint-disable-next-line @typescript-eslint/no-for-in-array
+                for (const verToDelete in toDelete) {
+                    const m = match.get(verToDelete);
+                    yield ((_a = this.octokit) === null || _a === void 0 ? void 0 : _a.request('DELETE /repos/{owner}/{repo}/releases/{release_id}', {
+                        owner: github.context.repo.owner,
+                        repo: github.context.repo.owner,
+                        release_id: (m === null || m === void 0 ? void 0 : m.id) || 0
+                    }));
+                }
+            }
+            else {
+                core.info(`Remove ${toDelete.join('/')}`);
+            }
+            return true;
+        });
     }
     parse(what) {
         if (!what || what === '') {
@@ -81,7 +107,7 @@ class BranchTask extends task_1.default {
             const cmd = split[0].trim();
             const arg = Number.parseInt(split[1].trim());
             if (isNaN(arg)) {
-                core.error(`cannot parse  ${split[1].trim()} in ${this.line}`);
+                core.error(`cannot parse ${split[1].trim()} in ${this.line}`);
                 return false;
             }
             switch (cmd) {
@@ -157,6 +183,7 @@ let octokit;
 let repos;
 let owner;
 let allreleases;
+let dryRun;
 function parseCommand(line) {
     const res = line.match(/^([^:]+):\s*(.*)\s*$/);
     if (!res) {
@@ -173,6 +200,7 @@ exports.parseCommand = parseCommand;
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            dryRun = core.getBooleanInput('dry-run');
             const lines = core.getMultilineInput('tasks');
             if (lines.length === 0) {
                 core.error('Please provide tasks to be executed');
@@ -204,6 +232,7 @@ function run() {
                 else {
                     task = new branchtask_1.default(line, branch, allreleases);
                 }
+                task.setDryRun(dryRun);
                 if (task.parse(args)) {
                     tasks.push(task);
                 }
@@ -234,17 +263,80 @@ run();
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core = __importStar(__nccwpck_require__(2186));
+const github = __importStar(__nccwpck_require__(5438));
 const branchtask_1 = __importDefault(__nccwpck_require__(314));
 class RemoveEmptyBranchesTask extends branchtask_1.default {
     constructor(line, releases) {
         super(line, '---', releases);
     }
     execute() {
-        return true;
+        var _a, _b;
+        return __awaiter(this, void 0, void 0, function* () {
+            const gh_branches = (_a = this.octokit) === null || _a === void 0 ? void 0 : _a.rest.repos.listBranches({
+                owner: github.context.repo.owner,
+                repo: github.context.repo.repo
+            });
+            const branches = gh_branches.map(b => b.name);
+            const visitedBranches = new Set();
+            for (const release of this.releases) {
+                if (visitedBranches.has(release.target_commitish)) {
+                    continue; // has been handled
+                }
+                if (!branches.includes(release.target_commitish)) {
+                    if (this.isDryRun()) {
+                        core.info(`Delete branch ${release.target_commitish}`);
+                    }
+                    else {
+                        // here we go
+                        yield ((_b = this.octokit) === null || _b === void 0 ? void 0 : _b.request('DELETE /repos/{owner}/{repo}/git/refs/heads/{head_ref}', {
+                            owner: github.context.repo.owner,
+                            repo: github.context.repo.owner,
+                            read_ref: release.target_commitish
+                        }));
+                        core.info(`Deleted branch ${release.target_commitish}`);
+                    }
+                    visitedBranches.add(release.target_commitish);
+                }
+            }
+            return true;
+        });
     }
 }
 exports["default"] = RemoveEmptyBranchesTask;
@@ -260,8 +352,19 @@ exports["default"] = RemoveEmptyBranchesTask;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 class Task {
     constructor(line, releases) {
+        this.dryRun = true;
+        this.octokit = undefined;
         this.line = line;
         this.releases = releases;
+    }
+    setDryRun(dryRun) {
+        this.dryRun = dryRun;
+    }
+    isDryRun() {
+        return this.dryRun || !this.octokit;
+    }
+    setOctokit(kit) {
+        this.octokit = kit;
     }
 }
 exports["default"] = Task;
